@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider.initialize
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
-import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
+import com.chuckerteam.chucker.api.SensitivityCheck
 
 /**
  * A singleton to hold the [HttpTransactionRepository] instance.

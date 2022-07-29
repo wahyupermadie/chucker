@@ -11,7 +11,7 @@ import com.chuckerteam.chucker.internal.data.entity.withResponseData
 import com.chuckerteam.chucker.internal.data.repository.HttpTransactionDatabaseRepository.Companion.MOCK_PATH
 import com.chuckerteam.chucker.internal.data.repository.HttpTransactionDatabaseRepository.Companion.MOCK_URL
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
-import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
+import com.chuckerteam.chucker.api.SensitivityCheck
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull

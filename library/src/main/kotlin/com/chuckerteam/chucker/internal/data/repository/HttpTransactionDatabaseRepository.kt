@@ -5,15 +5,16 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
-import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
-import java.util.*
+import com.chuckerteam.chucker.api.SensitivityCheck
+import java.util.Locale
 
 internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase, private val sensitivityCheck: SensitivityCheck?) :
     HttpTransactionRepository {
 
     companion object {
         const val MOCK_HOST = "https://sensitive.com"
-        val SECURITY_ERROR_MSG = "This log contains sensitive data. Please do not log it.".replace(' ', '+').toLowerCase(Locale.ROOT)
+        val SECURITY_ERROR_MSG = "This log contains sensitive data. Please do not log it."
+            .replace(' ', '+').lowercase(Locale.ROOT)
         val MOCK_PATH = "/sensitive/${SECURITY_ERROR_MSG}"
         val MOCK_URL = "$MOCK_HOST$MOCK_PATH"
     }

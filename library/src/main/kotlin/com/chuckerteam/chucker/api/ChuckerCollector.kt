@@ -23,6 +23,7 @@ import kotlinx.coroutines.withContext
  * is recorded.
  * @param retentionPeriod Set the retention period for HTTP transaction data captured
  * by this collector. The default is one week.
+ * @param sensitivityCheck set the sensitivityCheck to not log sensitive data in the chucker screen.
  */
 public class ChuckerCollector @JvmOverloads constructor(
     context: Context,

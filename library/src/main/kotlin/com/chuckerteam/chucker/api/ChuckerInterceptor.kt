@@ -7,7 +7,6 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
-import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException

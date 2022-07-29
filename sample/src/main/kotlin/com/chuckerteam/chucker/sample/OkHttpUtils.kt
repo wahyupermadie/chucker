@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
+import com.chuckerteam.chucker.api.SensitivityCheck
 import com.chuckerteam.chucker.sample.LogPattern.combinedRegex
 import okhttp3.Call
 import okhttp3.Callback

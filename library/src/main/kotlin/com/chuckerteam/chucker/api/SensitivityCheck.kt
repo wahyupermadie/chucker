@@ -1,6 +1,4 @@
-package com.chuckerteam.chucker.internal.toolkit
-
-import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
+package com.chuckerteam.chucker.api
 
 public class SensitivityCheck(private val builder: Builder) {
     private val regex = builder.regexValidator
