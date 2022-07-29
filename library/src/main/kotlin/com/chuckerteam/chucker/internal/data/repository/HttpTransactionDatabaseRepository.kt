@@ -5,8 +5,18 @@ import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.entity.HttpTransactionTuple
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
 import com.chuckerteam.chucker.internal.support.distinctUntilChanged
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
+import java.util.*
 
-internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase) : HttpTransactionRepository {
+internal class HttpTransactionDatabaseRepository(private val database: ChuckerDatabase, private val sensitivityCheck: SensitivityCheck?) :
+    HttpTransactionRepository {
+
+    companion object {
+        const val MOCK_HOST = "https://sensitive.com"
+        val SECURITY_ERROR_MSG = "This log contains sensitive data. Please do not log it.".replace(' ', '+').toLowerCase(Locale.ROOT)
+        val MOCK_PATH = "/sensitive/${SECURITY_ERROR_MSG}"
+        val MOCK_URL = "$MOCK_HOST$MOCK_PATH"
+    }
 
     private val transactionDao get() = database.transactionDao()
 
@@ -29,6 +39,24 @@ internal class HttpTransactionDatabaseRepository(private val database: ChuckerDa
     }
 
     override suspend fun insertTransaction(transaction: HttpTransaction) {
+
+        sensitivityCheck?.let {
+            if (it.isCheckHostSensitive(transaction.host)) {
+                transaction.host = MOCK_HOST
+                transaction.url = MOCK_URL
+            }
+            if (it.isCheckPathSensitive(transaction.url)) {
+                transaction.url = MOCK_URL
+                transaction.path = MOCK_PATH
+            }
+            if (it.isCheckResponseBodySensitive(transaction.responseBody)) {
+                transaction.responseBody = SECURITY_ERROR_MSG
+            }
+            if (it.isRequestBodySensitive(transaction.requestBody)) {
+                transaction.requestBody = SECURITY_ERROR_MSG
+            }
+        }
+
         val id = transactionDao.insert(transaction)
         transaction.id = id ?: 0
     }

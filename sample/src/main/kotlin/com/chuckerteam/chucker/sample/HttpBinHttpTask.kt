@@ -1,6 +1,5 @@
 package com.chuckerteam.chucker.sample
 
-import com.chuckerteam.chucker.sample.HttpBinHttpTask.Api.Data
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -29,7 +28,7 @@ class HttpBinHttpTask(
     client: OkHttpClient,
 ) : HttpTask {
     private val api = Retrofit.Builder()
-        .baseUrl("https://httpbin.org")
+        .baseUrl("https://httpbin-latitude.org/")
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()
@@ -46,38 +45,13 @@ class HttpBinHttpTask(
     @Suppress("MagicNumber")
     override fun run() = with(api) {
         get().enqueue(noOpCallback)
-        post(Data("posted")).enqueue(noOpCallback)
-        patch(Data("patched")).enqueue(noOpCallback)
-        put(Data("put")).enqueue(noOpCallback)
-        delete().enqueue(noOpCallback)
-        status(201).enqueue(noOpCallback)
-        status(401).enqueue(noOpCallback)
-        status(500).enqueue(noOpCallback)
-        delay(9).enqueue(noOpCallback)
-        delay(15).enqueue(noOpCallback)
-        redirectTo("https://http2.akamai.com").enqueue(noOpCallback)
-        redirect(3).enqueue(noOpCallback)
-        redirectRelative(2).enqueue(noOpCallback)
-        redirectAbsolute(4).enqueue(noOpCallback)
-        stream(500).enqueue(noOpCallback)
-        streamBytes(2048).enqueue(noOpCallback)
-        image("image/png").enqueue(noOpCallback)
-        brotliResponse().enqueue(noOpCallback)
-        gzipResponse().enqueue(noOpCallback)
-        gzipRequest(Data("Some gzip request")).enqueue(noOpCallback)
-        xml().enqueue(noOpCallback)
-        utf8().enqueue(noOpCallback)
-        deflate().enqueue(noOpCallback)
-        cookieSet("v").enqueue(noOpCallback)
-        basicAuth("me", "pass").enqueue(noOpCallback)
-        drip(512, 10, 1, 200).enqueue(noOpCallback)
-        deny().enqueue(noOpCallback)
-        cache("Mon").enqueue(noOpCallback)
-        cache(30).enqueue(noOpCallback)
-        redirectTo("https://ascii.cl?parameter=%22Click+on+%27URL+Encode%27%21%22").enqueue(noOpCallback)
-        redirectTo("https://ascii.cl?parameter=\"Click on 'URL Encode'!\"").enqueue(noOpCallback)
-        postForm("Value 1", "Value with symbols &$%").enqueue(noOpCallback)
-        postRawRequestBody(oneShotRequestBody()).enqueue(noOpCallback)
+        redirectTo("https://http2.akamai.com?lng=&lat=").enqueue(noOpCallback)
+        redirectTo("https://http2.akamai.com?addr=").enqueue(noOpCallback)
+        redirectTo("https://http2.akamai.com?longitude=&longitude=").enqueue(noOpCallback)
+        // "sensitif path"
+        redirectTo("https://http2.akamai.com?lng=123.234234&lat=-324.324234").enqueue(noOpCallback)
+        redirectTo("https://http2.akamai.com?addr=Sampalan+Port,+Batununggul,+Kec.+Nusa+Penida,+Kabupaten+Klungkung,+Bali+80771/").enqueue(noOpCallback)
+        redirectTo("https://http2.akamai.com?longitude=123.234234&longitude=-324.324234").enqueue(noOpCallback)
     }
 
     private fun oneShotRequestBody() = object : RequestBody() {
@@ -94,7 +68,7 @@ class HttpBinHttpTask(
         @GET("/get")
         fun get(): Call<Any?>
 
-        @POST("/post")
+        @POST("/post?latitude=-212323&longitude=-324324234")
         fun post(@Body body: Data): Call<Any?>
 
         @PATCH("/patch")

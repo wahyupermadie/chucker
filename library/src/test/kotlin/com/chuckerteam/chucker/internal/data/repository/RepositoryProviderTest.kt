@@ -40,13 +40,13 @@ internal class RepositoryProviderTest {
 
     @Test
     fun `transaction repository is available after initialization`() {
-        RepositoryProvider.initialize(context)
+        RepositoryProvider.initialize(context, null)
         assertThat(RepositoryProvider.transaction()).isNotNull()
     }
 
     @Test
     fun `transaction repository is cached`() {
-        RepositoryProvider.initialize(context)
+        RepositoryProvider.initialize(context, null)
         val one = RepositoryProvider.transaction()
         val two = RepositoryProvider.transaction()
         assertThat(one).isSameInstanceAs(two)

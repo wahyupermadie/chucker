@@ -115,7 +115,7 @@ internal class MainActivity :
                                 HarUtils.harStringFromTransactions(
                                     transactions,
                                     getString(R.string.chucker_name),
-                                    getString(R.string.chucker_version)
+                                    "getString(R.string.chucker_version)"
                                 )
                             )
                         }

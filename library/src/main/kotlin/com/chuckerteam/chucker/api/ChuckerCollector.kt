@@ -5,6 +5,7 @@ import android.net.Uri
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider
 import com.chuckerteam.chucker.internal.support.NotificationHelper
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
 import com.chuckerteam.chucker.internal.support.TransactionListDetailsSharable
 import com.chuckerteam.chucker.internal.support.writeToFile
 import kotlinx.coroutines.Dispatchers
@@ -26,14 +27,15 @@ import kotlinx.coroutines.withContext
 public class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
-    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK,
+    sensitivityCheck: SensitivityCheck?
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
     private val scope = MainScope()
 
     init {
-        RepositoryProvider.initialize(context)
+        RepositoryProvider.initialize(context, sensitivityCheck)
     }
 
     /**
