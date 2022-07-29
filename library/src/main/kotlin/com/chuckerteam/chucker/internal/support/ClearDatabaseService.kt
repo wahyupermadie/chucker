@@ -11,7 +11,7 @@ internal class ClearDatabaseService : JobIntentService() {
     private val scope = MainScope()
 
     override fun onHandleWork(intent: Intent) {
-        RepositoryProvider.initialize(applicationContext)
+        RepositoryProvider.initialize(applicationContext, null)
         scope.launch {
             RepositoryProvider.transaction().deleteAllTransactions()
             NotificationHelper.clearBuffer()

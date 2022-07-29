@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import com.chuckerteam.chucker.internal.data.repository.RepositoryProvider.initialize
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
 
 /**
  * A singleton to hold the [HttpTransactionRepository] instance.
@@ -22,10 +23,10 @@ internal object RepositoryProvider {
     /**
      * Idempotent method. Must be called before accessing the repositories.
      */
-    fun initialize(applicationContext: Context) {
+    fun initialize(applicationContext: Context, sensitivityCheck: SensitivityCheck?) {
         if (transactionRepository == null) {
             val db = ChuckerDatabase.create(applicationContext)
-            transactionRepository = HttpTransactionDatabaseRepository(db)
+            transactionRepository = HttpTransactionDatabaseRepository(db, sensitivityCheck)
         }
     }
 

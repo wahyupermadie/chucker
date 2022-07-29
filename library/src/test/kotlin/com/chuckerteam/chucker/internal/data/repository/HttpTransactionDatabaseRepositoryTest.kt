@@ -8,9 +8,13 @@ import com.chuckerteam.chucker.internal.data.entity.assertTuples
 import com.chuckerteam.chucker.internal.data.entity.createRequest
 import com.chuckerteam.chucker.internal.data.entity.randomString
 import com.chuckerteam.chucker.internal.data.entity.withResponseData
+import com.chuckerteam.chucker.internal.data.repository.HttpTransactionDatabaseRepository.Companion.MOCK_PATH
+import com.chuckerteam.chucker.internal.data.repository.HttpTransactionDatabaseRepository.Companion.MOCK_URL
 import com.chuckerteam.chucker.internal.data.room.ChuckerDatabase
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,11 +48,32 @@ internal class HttpTransactionDatabaseRepositoryTest {
         db = Room.inMemoryDatabaseBuilder(context, ChuckerDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        testObject = HttpTransactionDatabaseRepository(db)
+        testObject = HttpTransactionDatabaseRepository(db, null)
     }
 
     @After
     fun tearDown() = db.close()
+
+    @Test
+    fun `set sensivityCheck to skip path with longitude data`() = runBlocking {
+        val lngRegex = "lng.{1,25}-{0,1}\\d{1,4}\\.{0,1}\\d{0,10}".toRegex()
+        val sensitivityCheck = SensitivityCheck.Builder(lngRegex)
+            .isCheckHostSensitivity(true)
+            .isCheckPathSensitivity(true)
+            .isCheckResponseBodySensitivity(true)
+            .build()
+
+        testObject = HttpTransactionDatabaseRepository(db, sensitivityCheck)
+
+        val data = createRequest().apply {
+            populateUrl("https://www.example.com?lng=123.234234".toHttpUrlOrNull()!!)
+        }
+        testObject.insertTransaction(data)
+        testObject.getTransaction(data.id).observeForever {
+            assertThat(it?.url).isEqualTo(MOCK_URL)
+            assertThat(it?.path).isEqualTo(MOCK_PATH)
+        }
+    }
 
     @Test
     fun `get a single transaction`() = runBlocking {

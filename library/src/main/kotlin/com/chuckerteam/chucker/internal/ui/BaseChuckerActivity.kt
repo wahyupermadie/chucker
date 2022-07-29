@@ -9,7 +9,7 @@ internal abstract class BaseChuckerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RepositoryProvider.initialize(applicationContext)
+        RepositoryProvider.initialize(applicationContext, null)
     }
 
     override fun onResume() {

@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.internal.support.CacheDirectoryProvider
 import com.chuckerteam.chucker.internal.support.PlainTextDecoder
 import com.chuckerteam.chucker.internal.support.RequestProcessor
 import com.chuckerteam.chucker.internal.support.ResponseProcessor
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -34,7 +35,7 @@ public class ChuckerInterceptor private constructor(
 
     private val decoders = builder.decoders + BUILT_IN_DECODERS
 
-    private val collector = builder.collector ?: ChuckerCollector(builder.context)
+    private val collector = builder.collector ?: ChuckerCollector(builder.context, sensitivityCheck = builder.sensitivityCheck)
 
     private val requestProcessor = RequestProcessor(
         builder.context,
@@ -95,6 +96,7 @@ public class ChuckerInterceptor private constructor(
         internal var headersToRedact = emptySet<String>()
         internal var decoders = emptyList<BodyDecoder>()
         internal var createShortcut = true
+        internal var sensitivityCheck: SensitivityCheck? = null
 
         /**
          * Sets the [ChuckerCollector] to customize data retention.
@@ -153,6 +155,13 @@ public class ChuckerInterceptor private constructor(
          */
         public fun createShortcut(enable: Boolean): Builder = apply {
             this.createShortcut = enable
+        }
+
+        /**
+         * Add [SensitivityCheck] to skip sensitive data shown in Chucker Screen
+         */
+        public fun addSensitivityCheck(sensitivityCheck: SensitivityCheck): Builder = apply {
+            this.sensitivityCheck = sensitivityCheck
         }
 
         /**

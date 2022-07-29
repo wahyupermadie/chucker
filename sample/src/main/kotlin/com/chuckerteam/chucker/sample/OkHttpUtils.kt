@@ -4,6 +4,8 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
+import com.chuckerteam.chucker.internal.toolkit.SensitivityCheck
+import com.chuckerteam.chucker.sample.LogPattern.combinedRegex
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -20,7 +22,12 @@ fun createOkHttpClient(
     val collector = ChuckerCollector(
         context = context,
         showNotification = true,
-        retentionPeriod = RetentionManager.Period.ONE_HOUR
+        retentionPeriod = RetentionManager.Period.ONE_HOUR,
+        sensitivityCheck = SensitivityCheck.Builder(combinedRegex)
+            .isCheckHostSensitivity(true)
+            .isCheckPathSensitivity(true)
+            .isCheckResponseBodySensitivity(true)
+            .build()
     )
 
     @Suppress("MagicNumber")
