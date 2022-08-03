@@ -26,21 +26,11 @@ public class SensitivityCheck(private val builder: Builder) {
         return false
     }
 
-    public class Builder(regex: Regex) {
-        internal var isCheckHostSensitivity: Boolean = false
-        internal var isCheckPathSensitivity: Boolean = false
-        internal var isCheckResponseBodySensitivity: Boolean = false
-        internal var isCheckRequestBodySensitivity: Boolean = false
-        internal var regexValidator = regex
-
+    public class Builder {
         public fun isCheckHostSensitivity(enable: Boolean): Builder = this
-
         public fun isCheckPathSensitivity(enable: Boolean): Builder = this
-
         public fun isCheckResponseBodySensitivity(enable: Boolean): Builder = this
-
         public fun isCheckRequestBodySensitivity(enable: Boolean): Builder = this
-
         public fun build(): SensitivityCheck = SensitivityCheck(this)
     }
 }

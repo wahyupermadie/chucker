@@ -10,7 +10,8 @@ import android.net.Uri
 public class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
-    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK
+    retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK,
+    sensitivityCheck: SensitivityCheck = SensitivityCheck.Builder().build()
 ) {
     @Suppress("FunctionOnlyReturningConstant")
     public fun writeTransactions(
