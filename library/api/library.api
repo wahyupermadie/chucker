@@ -11,10 +11,10 @@ public final class com/chuckerteam/chucker/api/Chucker {
 }
 
 public final class com/chuckerteam/chucker/api/ChuckerCollector {
-	public fun <init> (Landroid/content/Context;)V
-	public fun <init> (Landroid/content/Context;Z)V
-	public fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;)V
-	public synthetic fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;Lcom/chuckerteam/chucker/api/SensitivityCheck;)V
+	public fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;Lcom/chuckerteam/chucker/api/SensitivityCheck;)V
+	public synthetic fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/RetentionManager$Period;Lcom/chuckerteam/chucker/api/SensitivityCheck;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;ZLcom/chuckerteam/chucker/api/SensitivityCheck;)V
 	public final fun getShowNotification ()Z
 	public final fun setShowNotification (Z)V
 	public final fun writeTransactions (Landroid/content/Context;Ljava/lang/Long;)Landroid/net/Uri;
@@ -30,6 +30,7 @@ public final class com/chuckerteam/chucker/api/ChuckerInterceptor : okhttp3/Inte
 public final class com/chuckerteam/chucker/api/ChuckerInterceptor$Builder {
 	public fun <init> (Landroid/content/Context;)V
 	public final fun addBodyDecoder (Lcom/chuckerteam/chucker/api/BodyDecoder;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
+	public final fun addSensitivityCheck (Lcom/chuckerteam/chucker/api/SensitivityCheck;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun alwaysReadResponseBody (Z)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
 	public final fun build ()Lcom/chuckerteam/chucker/api/ChuckerInterceptor;
 	public final fun collector (Lcom/chuckerteam/chucker/api/ChuckerCollector;)Lcom/chuckerteam/chucker/api/ChuckerInterceptor$Builder;
@@ -52,5 +53,18 @@ public final class com/chuckerteam/chucker/api/RetentionManager$Period : java/la
 	public static final field ONE_WEEK Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 	public static fun valueOf (Ljava/lang/String;)Lcom/chuckerteam/chucker/api/RetentionManager$Period;
 	public static fun values ()[Lcom/chuckerteam/chucker/api/RetentionManager$Period;
+}
+
+public final class com/chuckerteam/chucker/api/SensitivityCheck {
+	public fun <init> (Lcom/chuckerteam/chucker/api/SensitivityCheck$Builder;)V
+}
+
+public final class com/chuckerteam/chucker/api/SensitivityCheck$Builder {
+	public fun <init> (Lkotlin/text/Regex;)V
+	public final fun build ()Lcom/chuckerteam/chucker/api/SensitivityCheck;
+	public final fun isCheckHostSensitivity (Z)Lcom/chuckerteam/chucker/api/SensitivityCheck$Builder;
+	public final fun isCheckPathSensitivity (Z)Lcom/chuckerteam/chucker/api/SensitivityCheck$Builder;
+	public final fun isCheckRequestBodySensitivity (Z)Lcom/chuckerteam/chucker/api/SensitivityCheck$Builder;
+	public final fun isCheckResponseBodySensitivity (Z)Lcom/chuckerteam/chucker/api/SensitivityCheck$Builder;
 }
 
