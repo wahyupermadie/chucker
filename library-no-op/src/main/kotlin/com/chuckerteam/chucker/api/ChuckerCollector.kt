@@ -11,7 +11,7 @@ public class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK,
-    sensitivityCheck: SensitivityCheck = SensitivityCheck.Builder().build()
+    sensitivityCheck: SensitivityCheck = SensitivityCheck.Builder(Regex("")).build()
 ) {
     @Suppress("FunctionOnlyReturningConstant")
     public fun writeTransactions(
