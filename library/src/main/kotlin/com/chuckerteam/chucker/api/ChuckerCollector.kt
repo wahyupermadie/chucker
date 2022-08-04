@@ -28,7 +28,7 @@ public class ChuckerCollector @JvmOverloads constructor(
     context: Context,
     public var showNotification: Boolean = true,
     retentionPeriod: RetentionManager.Period = RetentionManager.Period.ONE_WEEK,
-    sensitivityCheck: SensitivityCheck?
+    sensitivityCheck: SensitivityCheck? = null
 ) {
     private val retentionManager: RetentionManager = RetentionManager(context, retentionPeriod)
     private val notificationHelper: NotificationHelper = NotificationHelper(context)
