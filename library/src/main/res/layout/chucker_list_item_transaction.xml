@@ -24,8 +24,7 @@
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="200"
-        tools:ignore="RtlSymmetry" />
+        tools:text="200" />
 
     <TextView
         android:id="@+id/path"

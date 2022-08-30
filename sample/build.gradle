@@ -1,10 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.squareup.wire'
-
-wire {
-    kotlin {}
-}
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -18,8 +13,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
-        buildConfig = false
+        viewBinding = true
     }
 
     buildTypes {
@@ -57,9 +51,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 dependencies {
@@ -67,8 +59,6 @@ dependencies {
     releaseImplementation project(':library-no-op')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
-    implementation "androidx.activity:activity-ktx:$activityVersion"
 
     implementation "com.google.android.material:material:$materialComponentsVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"

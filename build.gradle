@@ -1,44 +1,39 @@
 buildscript {
     ext {
-        kotlinVersion = '1.6.10'
-        androidGradleVersion = '7.2.1'
-        coroutineVersion = '1.6.3'
+        kotlinVersion = '1.5.21'
+        androidGradleVersion = '4.2.2'
+        coroutineVersion = '1.5.1'
 
         // Google libraries
-        activityVersion = '1.5.0'
-        appCompatVersion = '1.4.2'
-        constraintLayoutVersion = '2.1.4'
-        materialComponentsVersion = '1.6.1'
-        roomVersion = '2.4.2'
-        fragmentVersion = '1.5.0'
-        lifecycleVersion = '2.4.1'
+        activityVersion = '1.2.4'
+        appCompatVersion = '1.3.1'
+        constraintLayoutVersion = '2.0.4'
+        materialComponentsVersion = '1.4.0'
+        roomVersion = '2.3.0'
+        fragmentVersion = '1.3.6'
+        lifecycleVersion = '2.3.1'
         androidXCoreVersion = '2.1.0'
         paletteKtxVersion = '1.0.0'
 
         // Networking
-        brotliVersion = '0.1.2'
-        gsonVersion = '2.9.0'
-        okhttpVersion = '4.9.3'
-        retrofitVersion = '2.9.0'
-        wireVersion = '4.4.0'
+        gsonVersion = '2.8.7'
+        okhttpVersion = '3.12.10'
+        retrofitVersion = '2.6.4'
 
         // Debug and quality control
-        binaryCompatibilityValidator = '0.11.0'
-        detektVersion = '1.21.0'
-        ktLintGradleVersion = '10.3.0'
-        leakcanaryVersion = '2.9.1'
+        // detektVersion = '1.17.1'
+        dokkaVersion = '1.5.0'
+        ktLintGradleVersion = '10.0.0'
+        leakcanaryVersion = '2.7'
 
         // Testing
         androidxTestCoreVersion = '1.4.0'
-        junitGradlePluignVersion = '1.8.2.1'
-        junitVersion = '5.8.2'
-        junit4Version = '4.13.2'
-        mockkVersion = '1.12.4'
-        robolectricVersion = '4.8.1'
+        junitGradlePluignVersion = '1.7.1.1'
+        junitVersion = '5.7.2'
+        mockkVersion = '1.12.0'
+        robolectricVersion = '4.6.1'
         truthVersion = '1.1.3'
-
-        // Publishing
-        nexusStagingPlugin = '0.30.0'
+        vintageJunitVersion = '4.13'
     }
 
     repositories {
@@ -50,22 +45,9 @@ buildscript {
         classpath "com.android.tools.build:gradle:$androidGradleVersion"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktLintGradleVersion"
-        classpath "org.jetbrains.kotlinx:binary-compatibility-validator:$binaryCompatibilityValidator"
-        classpath "com.squareup.wire:wire-gradle-plugin:$wireVersion"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:$nexusStagingPlugin"
     }
-}
-apply plugin: 'binary-compatibility-validator'
-apply plugin: 'io.codearte.nexus-staging'
-
-apiValidation {
-    ignoredProjects += ["sample"]
-    ignoredPackages += [
-            "com.chuckerteam.chucker.internal",
-            "com.chuckerteam.chucker.databinding"
-    ]
 }
 
 allprojects {
@@ -75,6 +57,12 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+                includeModule("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+            }
+        }
     }
 
     tasks.withType(Test) {
@@ -84,25 +72,19 @@ allprojects {
     }
 }
 
-task installGitHook(type: Copy) {
-    from new File(rootProject.rootDir, 'pre-commit')
-    into { new File(rootProject.rootDir, '.git/hooks') }
-    fileMode 0777
-}
+//task installGitHook(type: Copy) {
+//    from new File(rootProject.rootDir, 'pre-commit')
+//    into { new File(rootProject.rootDir, '.git/hooks') }
+//    fileMode 0777
+//}
 
 task clean(type: Delete) {
-    dependsOn(installGitHook)
+    // dependsOn(installGitHook)
     delete rootProject.buildDir
 }
 
 ext {
-    minSdkVersion = 21
-    targetSdkVersion = 31
-    compileSdkVersion = 31
-}
-
-nexusStaging {
-    username = findProperty("NEXUS_USERNAME")
-    password = findProperty("NEXUS_PASSWORD")
-    stagingProfileId = "ea09119de9f4"
+    minSdkVersion = 16
+    targetSdkVersion = 30
+    compileSdkVersion = 30
 }

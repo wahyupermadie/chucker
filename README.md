@@ -11,8 +11,8 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Features](#features-)
   * [Multi-Window](#multi-window-)
 * [Configure](#configure-)
+  * [Throwables](#throwables-️)
   * [Redact-Header️](#redact-header-️)
-  * [Decode-Body](#decode-body-)
 * [Migrating](#migrating-)
 * [Snapshots](#snapshots-)
 * [FAQ](#faq-)
@@ -21,19 +21,19 @@ _A fork of [Chuck](https://github.com/jgilfelt/chuck)_
 * [Acknowledgments](#acknowledgments-)
 * [License](#license-)
 
-Chucker simplifies the inspection of **HTTP(S) requests/responses** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
+Chucker simplifies the inspection of **HTTP(S) requests/responses**, and **Throwables** fired by your Android App. Chucker works as an **OkHttp Interceptor** persisting all those events inside your application, and providing a UI for inspecting and sharing their content.
 
-Apps using Chucker will display a **notification** showing a summary of ongoing HTTP activity. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
+Apps using Chucker will display a **push notification** showing a summary of ongoing HTTP activity and Throwables. Tapping on the notification launches the full Chucker UI. Apps can optionally suppress the notification, and launch the Chucker UI directly from within their own interface.
 
-<p align="center">
-  <img src="assets/chucker-http.gif" alt="chucker http sample" width="50%"/>
-</p>
+| HTTP Calls | Throwables |
+| --- | --- |
+| ![Chucker HTTP transactions](assets/chucker-http.gif) | ![Chucker errors](assets/chucker-error.gif) |
 
 ## Getting Started 👣
 
-Chucker is distributed through [Maven Central](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library). To use it you need to add the following **Gradle dependency** to the `build.gradle` file of your android app module (NOT the root file).
+Chucker is distributed through [Maven Central](https://search.maven.org/artifact/com.github.chuckerteam.chucker/library). To use it you need to add the following **Gradle dependency** to your `build.gradle` file of you android app module (NOT the root file).
 
-Please note that you should add both the `library` and the `library-no-op` variant to isolate Chucker from release builds as follows:
+Please note that you should add both the `library` and the the `library-no-op` variant to isolate Chucker from release builds as follows:
 
 ```groovy
 dependencies {
@@ -42,7 +42,7 @@ dependencies {
 }
 ```
 
-To start using Chucker, just plug in a new `ChuckerInterceptor` to your OkHttp Client Builder:
+To start using Chucker, just plug it a new `ChuckerInterceptor` to your OkHttp Client Builder:
 
 ```kotlin
 val client = OkHttpClient.Builder()
@@ -50,23 +50,9 @@ val client = OkHttpClient.Builder()
                 .build()
 ```
 
-[Enable Java 8 support](https://developer.android.com/studio/write/java8-support).
-
-```groovy
-android {
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-
-  // For Kotlin projects add also this line
-  kotlinOptions.jvmTarget = "1.8"
-}
-```
-
 **That's it!** 🎉 Chucker will now record all HTTP interactions made by your OkHttp client.
 
-Historically, Chucker was distributed through JitPack.
+Historically, Chucker was distributed through JitPack. 
 You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/ChuckerTeam/chucker.svg)](https://jitpack.io/#ChuckerTeam/chucker).
 
 ## Features 🧰
@@ -74,13 +60,12 @@ You can find older version of Chucker here: [![JitPack](https://jitpack.io/v/Chu
 Don't forget to check the [changelog](CHANGELOG.md) to have a look at all the changes in the latest version of Chucker.
 
 * Compatible with **OkHTTP 4**
-* **API >= 21** compatible
+* **API >= 16** compatible
 * Easy to integrate (just 2 gradle `implementation` lines).
 * Works **out of the box**, no customization needed.
 * **Empty release artifact** 🧼 (no traces of Chucker in your final APK).
 * Support for body text search with **highlighting** 🕵️‍♂️
 * Support for showing **images** in HTTP Responses 🖼
-* Support for custom decoding of HTTP bodies
 
 ### Multi-Window 🚪
 
@@ -96,7 +81,7 @@ You can customize chucker providing an instance of a `ChuckerCollector`:
 // Create the Collector
 val chuckerCollector = ChuckerCollector(
         context = this,
-        // Toggles visibility of the notification
+        // Toggles visibility of the push notification
         showNotification = true,
         // Allows to customize the retention period of collected data
         retentionPeriod = RetentionManager.Period.ONE_HOUR
@@ -114,17 +99,26 @@ val chuckerInterceptor = ChuckerInterceptor.Builder(context)
         // This is useful in case of parsing errors or when the response body
         // is closed before being read like in Retrofit with Void and Unit types.
         .alwaysReadResponseBody(true)
-        // Use decoder when processing request and response bodies. When multiple decoders are installed they
-        // are applied in an order they were added.
-        .addBodyDecoder(decoder)
-        // Controls Android shortcut creation. Available in SNAPSHOTS versions only at the moment
-        .createShortcut(true)
         .build()
 
 // Don't forget to plug the ChuckerInterceptor inside the OkHttpClient
 val client = OkHttpClient.Builder()
         .addInterceptor(chuckerInterceptor)
         .build()
+```
+
+### Throwables (Deprected) ☄️
+
+#### Warning: This functionality will be unavailable in 4.x release. Details in [this issue](https://github.com/ChuckerTeam/chucker/issues/321#issuecomment-626138370)
+
+Chucker can also collect and display **Throwables** of your application. To inform Chucker that a `Throwable` was fired you need to call the `onError` method of the `ChuckerCollector` (you need to retain an instance of your collector):
+
+```kotlin
+try {
+    // Do something risky
+} catch (IOException exception) {
+    chuckerCollector.onError("TAG", exception)
+}
 ```
 
 ### Redact-Header 👮‍♂️
@@ -135,32 +129,8 @@ It is intended for **use during development**, and not in release builds or othe
 
 You can redact headers that contain sensitive information by calling `redactHeader(String)` on the `ChuckerInterceptor`.
 
-
 ```kotlin
 interceptor.redactHeader("Auth-Token", "User-Session");
-```
-
-### Decode-Body 📖
-
-**Warning** This feature is available in SNAPSHOT builds at the moment, not in 3.5.2
-
-Chucker by default handles only plain text, Gzip compressed or Brotli compressed. If you use a binary format like, for example, Protobuf or Thrift it won't be automatically handled by Chucker. You can, however, install a custom decoder that is capable of reading data from different encodings.
-
-```kotlin
-object ProtoDecoder : BinaryDecoder {
-    fun decodeRequest(request: Request, body: ByteString): String? = if (request.isExpectedProtoRequest) {
-        decodeProtoBody(body)
-    } else {
-        null
-    }
-
-    fun decodeResponse(request: Response, body: ByteString): String? = if (request.isExpectedProtoResponse) {
-        decodeProtoBody(body)
-    } else {
-        null
-    }
-}
-interceptorBuilder.addBodyDecoder(ProtoDecoder).build()
 ```
 
 ## Migrating 🚗
@@ -179,8 +149,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 dependencies {
-  debugImplementation "com.github.chuckerteam.chucker:library:4.0.0-SNAPSHOT"
-  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0-SNAPSHOT"
+  debugImplementation "com.github.chuckerteam.chucker:library:3.4.1-SNAPSHOT"
+  releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.4.1-SNAPSHOT"
 }
 ```
 
@@ -203,21 +173,11 @@ If you're looking for the **latest stable version**, you can always find it in `
 
 ## FAQ ❓
 
-* Why are some of my request headers (e.g. `Content-Encoding` or `Accept-Encoding`) missing?
+* Why are some of my request headers missing?
 * Why are retries and redirects not being captured discretely?
 * Why are my encoded request/response bodies not appearing as plain text?
 
 Please refer to [this section of the OkHttp documentation](https://square.github.io/okhttp/interceptors/). You can choose to use Chucker as either an application or network interceptor, depending on your requirements.
-
-* Why Android < 21 is no longer supported?
-
-In order to keep up with the changes in OkHttp we decided to bump its version in `4.x` release. Chucker `3.5.x` supports Android 16+ but its active development stopped and only bug fixes and minor improvements will land on [3.x branch](https://github.com/ChuckerTeam/chucker/tree/3.x) till March 2021.
-
-# Sponsors 💸
-
-Chucker is maintained and improved during nights, weekends and whenever team has free time. If you use Chucker in your project, please consider sponsoring us. This will help us buy a domain for a website we will have soon and also spend some money on charity. Additionally, sponsorthip will also help us understand better how valuable Chucker is for people's everyday work.
-
-You can sponsor us by clicking `Sponsor` button.
 
 ## Contributing 🤝
 
@@ -262,6 +222,7 @@ This will make sure your CI checks will pass.
 Chucker is currently developed and maintained by the [ChuckerTeam](https://github.com/ChuckerTeam). When submitting a new PR, please ping one of:
 
 - [@cortinico](https://github.com/cortinico)
+- [@MiSikora](https://github.com/MiSikora)
 - [@olivierperez](https://github.com/olivierperez)
 - [@vbuberen](https://github.com/vbuberen)
 
@@ -280,7 +241,7 @@ Chucker uses the following open source libraries:
 ## License 📄
 
 ```
-    Copyright (C) 2018-2021 Chucker Team.
+    Copyright (C) 2018-2020 Chucker Team.
     Copyright (C) 2017 Jeff Gilfelt.
 
     Licensed under the Apache License, Version 2.0 (the "License");

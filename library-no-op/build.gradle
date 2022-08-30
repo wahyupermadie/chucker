@@ -6,13 +6,9 @@ android {
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += [
-                '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
-                "-Xexplicit-api=strict"
+            '-module-name', "com.github.ChuckerTeam.Chucker.library-no-op",
+            "-Xexplicit-api=strict"
         ]
-    }
-
-    buildFeatures {
-        buildConfig = false
     }
 
     defaultConfig {
@@ -26,13 +22,6 @@ android {
         disable 'RtlEnabled'
         // Don't fail build if some dependencies outdated
         disable 'GradleDependency'
-    }
-
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
-        }
     }
 }
 
